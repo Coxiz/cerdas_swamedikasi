@@ -2,8 +2,6 @@ import 'package:cerdas_swamedikasi/app/config/constants/app-constants.dart';
 import 'package:cerdas_swamedikasi/app/config/themes/app-theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../config/constants/app_constants.dart';
-import '../../config/themes/app_theme.dart';
 
 class CustomSplashScreen extends StatefulWidget {
   const CustomSplashScreen({Key? key}) : super(key: key);
@@ -16,13 +14,14 @@ class _CustomSplashScreenState extends State<CustomSplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
+  bool _navigated = false; // Track if we've already navigated
 
   @override
   void initState() {
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500),
+      duration: const Duration(seconds: 5),
     );
     _animation = CurvedAnimation(
       parent: _animationController,
@@ -30,8 +29,12 @@ class _CustomSplashScreenState extends State<CustomSplashScreen>
     );
     _animationController.forward();
 
-    Future.delayed(const Duration(seconds: 2), () {
-      Get.offAllNamed(AppConstants.HOME);
+    // Use a longer delay for splash screen
+    Future.delayed(const Duration(seconds: 3), () {
+      if (!_navigated) {
+        _navigated = true;
+        Get.offAllNamed(AppConstants.HOME);
+      }
     });
   }
 

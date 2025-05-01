@@ -1,6 +1,5 @@
 import 'package:cerdas_swamedikasi/app/config/constants/app-constants.dart';
 import 'package:cerdas_swamedikasi/app/config/themes/app-theme.dart';
-import 'package:cerdas_swamedikasi/app/global_widgets/others/custom-splash-screen.dart';
 import 'package:cerdas_swamedikasi/app/routes/app-pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -24,9 +23,8 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.light,
-      home: const CustomSplashScreen(),
-      getPages: AppPages.routes,
       initialRoute: AppPages.INITIAL,
+      getPages: AppPages.routes,
     );
   }
 }

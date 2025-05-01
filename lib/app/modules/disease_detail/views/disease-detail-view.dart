@@ -168,19 +168,12 @@ class DiseaseDetailView extends GetView<DiseaseDetailController> {
           const SizedBox(width: AppConstants.PADDING_M),
           Expanded(
             child: Obx(() {
-              // Fix: Explicitly handle the null case for VoidCallback
-              VoidCallback? onPressed;
-              if (controller.canProceed) {
-                onPressed = () {
-                  controller.goToRecommendation();
-                };
-              } else {
-                onPressed = null;
-              }
-
               return CustomButton(
                 text: 'Lanjutkan',
-                onPressed: () {}, //onPressed,
+                // Now that CustomButton accepts nullable VoidCallback, we can directly use a ternary operator
+                onPressed: controller.canProceed
+                    ? () => controller.goToRecommendation()
+                    : null,
                 type: ButtonType.primary,
                 isDisabled: !controller.canProceed,
                 icon: Icons.arrow_forward,

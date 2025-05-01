@@ -11,12 +11,20 @@ import 'package:cerdas_swamedikasi/app/modules/home/bindings/home-binding.dart';
 import 'package:cerdas_swamedikasi/app/modules/home/views/home-view.dart';
 import 'package:cerdas_swamedikasi/app/modules/recommendation/bindings/recommendation-binding.dart';
 import 'package:cerdas_swamedikasi/app/modules/recommendation/views/recommendation-view.dart';
+import 'package:cerdas_swamedikasi/app/modules/splash/bindings/splash_bindings.dart';
+import 'package:cerdas_swamedikasi/app/modules/splash/views/splash_views.dart';
 import 'package:get/get.dart';
 
 class AppPages {
-  static const INITIAL = AppConstants.HOME;
+  static const INITIAL = AppConstants.SPLASH; // Changed to splash route
 
   static final routes = [
+    GetPage(
+      name: AppConstants.SPLASH,
+      page: () => const SplashView(),
+      binding: SplashBinding(),
+      transition: Transition.fadeIn,
+    ),
     GetPage(
       name: AppConstants.HOME,
       page: () => const HomeView(),

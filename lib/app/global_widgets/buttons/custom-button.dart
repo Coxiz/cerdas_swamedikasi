@@ -1,8 +1,6 @@
 import 'package:cerdas_swamedikasi/app/config/constants/app-constants.dart';
 import 'package:cerdas_swamedikasi/app/config/themes/app-theme.dart';
 import 'package:flutter/material.dart';
-import '../../config/themes/app_theme.dart';
-import '../../config/constants/app_constants.dart';
 
 enum ButtonType { primary, secondary, outlined, text }
 
@@ -10,7 +8,7 @@ enum ButtonSize { small, medium, large }
 
 class CustomButton extends StatelessWidget {
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed; // Changed to accept nullable VoidCallback
   final ButtonType type;
   final ButtonSize size;
   final IconData? icon;
@@ -47,10 +45,13 @@ class CustomButton extends StatelessWidget {
   }
 
   Widget _buildButton() {
+    // Check if button should be disabled
+    final bool disabled = isDisabled || isLoading || onPressed == null;
+
     switch (type) {
       case ButtonType.primary:
         return ElevatedButton(
-          onPressed: isDisabled || isLoading ? null : onPressed,
+          onPressed: disabled ? null : onPressed,
           style: ElevatedButton.styleFrom(
             backgroundColor: AppTheme.primaryColor,
             foregroundColor: Colors.white,
@@ -64,7 +65,7 @@ class CustomButton extends StatelessWidget {
         );
       case ButtonType.secondary:
         return ElevatedButton(
-          onPressed: isDisabled || isLoading ? null : onPressed,
+          onPressed: disabled ? null : onPressed,
           style: ElevatedButton.styleFrom(
             backgroundColor: AppTheme.secondaryColor,
             foregroundColor: Colors.white,
@@ -78,7 +79,7 @@ class CustomButton extends StatelessWidget {
         );
       case ButtonType.outlined:
         return OutlinedButton(
-          onPressed: isDisabled || isLoading ? null : onPressed,
+          onPressed: disabled ? null : onPressed,
           style: OutlinedButton.styleFrom(
             foregroundColor: AppTheme.primaryColor,
             side: const BorderSide(color: AppTheme.primaryColor, width: 1.5),
@@ -91,7 +92,7 @@ class CustomButton extends StatelessWidget {
         );
       case ButtonType.text:
         return TextButton(
-          onPressed: isDisabled || isLoading ? null : onPressed,
+          onPressed: disabled ? null : onPressed,
           style: TextButton.styleFrom(
             foregroundColor: AppTheme.primaryColor,
             shape: RoundedRectangleBorder(
