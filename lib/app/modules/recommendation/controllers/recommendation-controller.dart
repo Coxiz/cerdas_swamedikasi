@@ -144,13 +144,7 @@ class RecommendationController extends GetxController {
         buffer.writeln('');
       }
 
-      if (rec.warnings.isNotEmpty) {
-        buffer.writeln('PERINGATAN:');
-        for (var i = 0; i < rec.warnings.length; i++) {
-          buffer.writeln('${i + 1}. ${rec.warnings[i]}');
-        }
-        buffer.writeln('');
-      }
+      // Warnings section removed as requested
     }
 
     buffer.writeln(

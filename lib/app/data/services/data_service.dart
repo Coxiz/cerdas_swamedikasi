@@ -252,7 +252,7 @@ class DataService extends GetxService {
       name: 'Kulit menjadi merah muda dan tampak hampir terbuka kulitnya',
       description: 'Luka bakar derajat dua',
       severity: 3,
-      isCritical: true,
+      isCritical: false,
     ),
 
     // Gejala Maag
@@ -285,7 +285,7 @@ class DataService extends GetxService {
       description:
           'Tidak ada riwayat pengobatan yang berpotensi memperburuk maag',
       severity: 1,
-      isCritical: true,
+      isCritical: false,
     ),
 
     // Gejala Biang Keringat
@@ -317,7 +317,7 @@ class DataService extends GetxService {
           'Bintil-bintil halus kemerahan terutama pada daerah-daerah lipatan tubuh seperti leher, lipat tangan, lipat siku',
       description: 'Lokasi tipikal biang keringat',
       severity: 2,
-      isCritical: true,
+      isCritical: false,
     ),
 
     // Gejala Jerawat

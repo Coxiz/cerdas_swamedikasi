@@ -44,11 +44,8 @@ class DiseaseItem extends StatelessWidget {
                     borderRadius:
                         BorderRadius.circular(AppConstants.BORDER_RADIUS_M),
                   ),
-                  child: const Icon(
-                    Icons.health_and_safety,
-                    color: AppTheme.primaryColor,
-                    size: 28,
-                  ),
+                  // Icon placeholder - emptied as requested but component kept
+                  child: const SizedBox(),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -62,13 +59,7 @@ class DiseaseItem extends StatelessWidget {
                                   fontWeight: FontWeight.w600,
                                 ),
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Gejala: ${disease.symptoms.length}',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: AppTheme.textColorSecondary,
-                            ),
-                      ),
+                      // Removed the symptom count as requested
                     ],
                   ),
                 ),

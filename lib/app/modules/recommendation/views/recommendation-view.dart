@@ -25,6 +25,16 @@ class RecommendationView extends GetView<RecommendationController> {
 
         return Column(
           children: [
+            // Top button - Kembali ke Beranda (secondary color)
+            Padding(
+              padding: const EdgeInsets.all(AppConstants.PADDING_M),
+              child: CustomButton(
+                text: 'Kembali ke Beranda',
+                onPressed: controller.goToHome,
+                type: ButtonType.secondary, // Changed to secondary
+                icon: Icons.home,
+              ),
+            ),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(AppConstants.PADDING_M),
@@ -47,8 +57,7 @@ class RecommendationView extends GetView<RecommendationController> {
                             _buildMedicationList(),
                             const SizedBox(height: AppConstants.PADDING_M),
                             _buildAdditionalAdvice(),
-                            const SizedBox(height: AppConstants.PADDING_M),
-                            _buildWarnings(),
+                            // Removed warnings section as requested
                           ],
                         );
                       }
@@ -59,11 +68,134 @@ class RecommendationView extends GetView<RecommendationController> {
                 ),
               ),
             ),
-            _buildBottomButtons(),
+            // Bottom button - Salin Rekomendasi (primary color)
+            Padding(
+              padding: const EdgeInsets.all(AppConstants.PADDING_M),
+              child: CustomButton(
+                text: 'Salin Rekomendasi',
+                onPressed: controller.copyRecommendation,
+                type: ButtonType.primary, // Changed to primary
+                icon: Icons.copy,
+              ),
+            ),
           ],
         );
       }),
     );
+  }
+
+  Widget _buildMedicationList() {
+    return Obx(() {
+      final rec = controller.recommendation.value;
+      if (rec == null) return const SizedBox();
+
+      return CustomCard(
+        backgroundColor: Colors.white,
+        borderRadius: AppConstants.BORDER_RADIUS_L,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomCardHeader(
+              title: 'Obat yang Direkomendasikan',
+              leading: Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryColor.withOpacity(0.1),
+                  borderRadius:
+                      BorderRadius.circular(AppConstants.BORDER_RADIUS_S),
+                ),
+                child: const Icon(
+                  Icons.medication,
+                  color: AppTheme.primaryColor,
+                  size: 18,
+                ),
+              ),
+            ),
+            const SizedBox(height: AppConstants.PADDING_S),
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: rec.medications.length,
+              separatorBuilder: (context, index) => const Divider(),
+              itemBuilder: (context, index) {
+                final medication = rec.medications[index];
+                return Padding(
+                  padding: const EdgeInsets.all(AppConstants.PADDING_M),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        medication.name,
+                        style: Get.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: AppConstants.PADDING_S),
+                      _buildInfoRow(
+                        icon: Icons.medical_information,
+                        label: 'Dosis:',
+                        value: medication.dosage,
+                      ),
+                      _buildInfoRow(
+                        icon: Icons.schedule,
+                        label: 'Frekuensi:',
+                        value: medication.frequency,
+                      ),
+                      _buildInfoRow(
+                        icon: Icons.calendar_today,
+                        label: 'Durasi:',
+                        value: medication.duration,
+                      ),
+                      // Removed side effects section as requested
+                      if (medication.precautions.isNotEmpty) ...[
+                        const SizedBox(height: AppConstants.PADDING_S),
+                        Text(
+                          'Perhatian:',
+                          style: Get.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: AppConstants.PADDING_XS),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: medication.precautions.map((precaution) {
+                            return Padding(
+                              padding: const EdgeInsets.only(
+                                  bottom: AppConstants.PADDING_XS),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Icon(
+                                    Icons.warning_amber,
+                                    size: 16,
+                                    color: AppTheme.warningColor,
+                                  ),
+                                  const SizedBox(width: AppConstants.PADDING_S),
+                                  Expanded(
+                                    child: Text(
+                                      precaution,
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        color: AppTheme.textColorPrimary,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ],
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      );
+    });
   }
 
   Widget _buildHeader() {
@@ -281,148 +413,6 @@ class RecommendationView extends GetView<RecommendationController> {
     });
   }
 
-  Widget _buildMedicationList() {
-    return Obx(() {
-      final rec = controller.recommendation.value;
-      if (rec == null) return const SizedBox();
-
-      return CustomCard(
-        backgroundColor: Colors.white,
-        borderRadius: AppConstants.BORDER_RADIUS_L,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomCardHeader(
-              title: 'Obat yang Direkomendasikan',
-              leading: Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: AppTheme.primaryColor.withOpacity(0.1),
-                  borderRadius:
-                      BorderRadius.circular(AppConstants.BORDER_RADIUS_S),
-                ),
-                child: const Icon(
-                  Icons.medication,
-                  color: AppTheme.primaryColor,
-                  size: 18,
-                ),
-              ),
-            ),
-            const SizedBox(height: AppConstants.PADDING_S),
-            ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: rec.medications.length,
-              separatorBuilder: (context, index) => const Divider(),
-              itemBuilder: (context, index) {
-                final medication = rec.medications[index];
-                return Padding(
-                  padding: const EdgeInsets.all(AppConstants.PADDING_M),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        medication.name,
-                        style: Get.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: AppConstants.PADDING_S),
-                      _buildInfoRow(
-                        icon: Icons.medical_information,
-                        label: 'Dosis:',
-                        value: medication.dosage,
-                      ),
-                      _buildInfoRow(
-                        icon: Icons.schedule,
-                        label: 'Frekuensi:',
-                        value: medication.frequency,
-                      ),
-                      _buildInfoRow(
-                        icon: Icons.calendar_today,
-                        label: 'Durasi:',
-                        value: medication.duration,
-                      ),
-                      if (medication.sideEffects.isNotEmpty) ...[
-                        const SizedBox(height: AppConstants.PADDING_S),
-                        Text(
-                          'Efek Samping:',
-                          style: Get.textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: AppConstants.PADDING_XS),
-                        Wrap(
-                          spacing: AppConstants.PADDING_S,
-                          runSpacing: AppConstants.PADDING_XS,
-                          children: medication.sideEffects.map((effect) {
-                            return Chip(
-                              label: Text(
-                                effect,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: AppTheme.textColorSecondary,
-                                ),
-                              ),
-                              backgroundColor: Colors.grey[200],
-                              visualDensity: VisualDensity.compact,
-                              materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
-                            );
-                          }).toList(),
-                        ),
-                      ],
-                      if (medication.precautions.isNotEmpty) ...[
-                        const SizedBox(height: AppConstants.PADDING_S),
-                        Text(
-                          'Perhatian:',
-                          style: Get.textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: AppConstants.PADDING_XS),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: medication.precautions.map((precaution) {
-                            return Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: AppConstants.PADDING_XS),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Icon(
-                                    Icons.warning_amber,
-                                    size: 16,
-                                    color: AppTheme.warningColor,
-                                  ),
-                                  const SizedBox(width: AppConstants.PADDING_S),
-                                  Expanded(
-                                    child: Text(
-                                      precaution,
-                                      style: const TextStyle(
-                                        fontSize: 13,
-                                        color: AppTheme.textColorPrimary,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ],
-                    ],
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      );
-    });
-  }
-
   Widget _buildAdditionalAdvice() {
     return Obx(() {
       final rec = controller.recommendation.value;
@@ -492,83 +482,6 @@ class RecommendationView extends GetView<RecommendationController> {
     });
   }
 
-  Widget _buildWarnings() {
-    return Obx(() {
-      final rec = controller.recommendation.value;
-      if (rec == null || rec.warnings.isEmpty) return const SizedBox();
-
-      return CustomCard(
-        backgroundColor: AppTheme.warningColor.withOpacity(0.05),
-        borderRadius: AppConstants.BORDER_RADIUS_L,
-        hasBorder: true,
-        borderColor: AppTheme.warningColor.withOpacity(0.3),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomCardHeader(
-              title: 'Peringatan',
-              titleStyle: Get.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: AppTheme.warningColor,
-              ),
-              leading: Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: AppTheme.warningColor.withOpacity(0.1),
-                  borderRadius:
-                      BorderRadius.circular(AppConstants.BORDER_RADIUS_S),
-                ),
-                child: const Icon(
-                  Icons.warning_amber,
-                  color: AppTheme.warningColor,
-                  size: 18,
-                ),
-              ),
-              hasDivider: false,
-            ),
-            const SizedBox(height: AppConstants.PADDING_S),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: rec.warnings.length,
-              itemBuilder: (context, index) {
-                final warning = rec.warnings[index];
-                return Padding(
-                  padding: const EdgeInsets.only(
-                    left: AppConstants.PADDING_M,
-                    right: AppConstants.PADDING_M,
-                    bottom: AppConstants.PADDING_M,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Icon(
-                        Icons.warning_amber,
-                        size: 20,
-                        color: AppTheme.warningColor,
-                      ),
-                      const SizedBox(width: AppConstants.PADDING_M),
-                      Expanded(
-                        child: Text(
-                          warning,
-                          style: const TextStyle(
-                            color: AppTheme.textColorPrimary,
-                            height: 1.4,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      );
-    });
-  }
-
   Widget _buildInfoRow({
     required IconData icon,
     required String label,
@@ -602,47 +515,6 @@ class RecommendationView extends GetView<RecommendationController> {
                 fontSize: 14,
                 color: AppTheme.textColorPrimary,
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBottomButtons() {
-    return Container(
-      padding: const EdgeInsets.all(AppConstants.PADDING_M),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(AppConstants.BORDER_RADIUS_L),
-          topRight: Radius.circular(AppConstants.BORDER_RADIUS_L),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            offset: const Offset(0, -3),
-            blurRadius: 6,
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: CustomButton(
-              text: 'Salin Rekomendasi',
-              onPressed: controller.copyRecommendation,
-              type: ButtonType.outlined,
-              icon: Icons.copy,
-            ),
-          ),
-          const SizedBox(width: AppConstants.PADDING_M),
-          Expanded(
-            child: CustomButton(
-              text: 'Kembali ke Beranda',
-              onPressed: controller.goToHome,
-              type: ButtonType.primary,
-              icon: Icons.home,
             ),
           ),
         ],

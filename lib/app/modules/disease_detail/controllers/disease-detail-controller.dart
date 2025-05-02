@@ -63,10 +63,15 @@ class DiseaseDetailController extends GetxController {
     return selectedSymptoms.contains(symptomId);
   }
 
-  // Updated to match project-logic.js logic - at least 2 symptoms must be selected
-  bool get canProceed => selectedSymptoms.length >= 2;
+  bool get canProceed {
+    // If any selected symptom is critical, allow proceeding regardless of count
+    if (hasCriticalSymptom()) {
+      return true;
+    }
+    // Otherwise, require at least 2 symptoms to be selected
+    return selectedSymptoms.length >= 2;
+  }
 
-  // Check if any critical symptom is selected
   bool hasCriticalSymptom() {
     for (String id in selectedSymptoms) {
       Symptom? symptom = _dataService.findSymptomById(id);

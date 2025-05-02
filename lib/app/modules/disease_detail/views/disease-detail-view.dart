@@ -156,32 +156,17 @@ class DiseaseDetailView extends GetView<DiseaseDetailController> {
           ),
         ],
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: CustomButton(
-              text: 'Kembali',
-              onPressed: () => Get.back(),
-              type: ButtonType.outlined,
-            ),
-          ),
-          const SizedBox(width: AppConstants.PADDING_M),
-          Expanded(
-            child: Obx(() {
-              return CustomButton(
-                text: 'Lanjutkan',
-                // Now that CustomButton accepts nullable VoidCallback, we can directly use a ternary operator
-                onPressed: controller.canProceed
-                    ? () => controller.goToRecommendation()
-                    : null,
-                type: ButtonType.primary,
-                isDisabled: !controller.canProceed,
-                icon: Icons.arrow_forward,
-              );
-            }),
-          ),
-        ],
-      ),
+      child: Obx(() {
+        return CustomButton(
+          text: 'Lihat Hasil',
+          onPressed: controller.canProceed
+              ? () => controller.goToRecommendation()
+              : null,
+          type: ButtonType.primary,
+          isDisabled: !controller.canProceed,
+          icon: Icons.arrow_forward,
+        );
+      }),
     );
   }
 }
