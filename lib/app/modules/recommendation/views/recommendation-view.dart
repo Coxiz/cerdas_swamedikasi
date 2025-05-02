@@ -25,16 +25,6 @@ class RecommendationView extends GetView<RecommendationController> {
 
         return Column(
           children: [
-            // Top button - Kembali ke Beranda (secondary color)
-            Padding(
-              padding: const EdgeInsets.all(AppConstants.PADDING_M),
-              child: CustomButton(
-                text: 'Kembali ke Beranda',
-                onPressed: controller.goToHome,
-                type: ButtonType.secondary, // Changed to secondary
-                icon: Icons.home,
-              ),
-            ),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(AppConstants.PADDING_M),
@@ -68,14 +58,27 @@ class RecommendationView extends GetView<RecommendationController> {
                 ),
               ),
             ),
-            // Bottom button - Salin Rekomendasi (primary color)
-            Padding(
+            // Bottom buttons container
+            Container(
               padding: const EdgeInsets.all(AppConstants.PADDING_M),
-              child: CustomButton(
-                text: 'Salin Rekomendasi',
-                onPressed: controller.copyRecommendation,
-                type: ButtonType.primary, // Changed to primary
-                icon: Icons.copy,
+              child: Column(
+                children: [
+                  // "Kembali ke Beranda" button now using ButtonType.outlined
+                  CustomButton(
+                    text: 'Kembali ke Beranda',
+                    onPressed: controller.goToHome,
+                    type: ButtonType.outlined, // Changed to outlined style
+                    icon: Icons.home,
+                  ),
+                  const SizedBox(height: AppConstants.PADDING_M),
+                  // "Salin Rekomendasi" button with primary color
+                  CustomButton(
+                    text: 'Salin Rekomendasi',
+                    onPressed: controller.copyRecommendation,
+                    type: ButtonType.primary,
+                    icon: Icons.copy,
+                  ),
+                ],
               ),
             ),
           ],
