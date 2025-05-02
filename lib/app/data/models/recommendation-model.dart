@@ -7,6 +7,8 @@ class Recommendation {
   final List<String> additionalAdvice;
   final List<String> warnings;
   final bool needsMedicalAttention;
+  final String
+      criticalMessage; // Message to show when critical symptoms are selected
 
   Recommendation({
     required this.id,
@@ -17,6 +19,7 @@ class Recommendation {
     this.additionalAdvice = const [],
     this.warnings = const [],
     this.needsMedicalAttention = false,
+    this.criticalMessage = '',
   });
 
   factory Recommendation.fromJson(Map<String, dynamic> json) {
@@ -31,6 +34,7 @@ class Recommendation {
       additionalAdvice: List<String>.from(json['additionalAdvice'] ?? []),
       warnings: List<String>.from(json['warnings'] ?? []),
       needsMedicalAttention: json['needsMedicalAttention'] as bool? ?? false,
+      criticalMessage: json['criticalMessage'] as String? ?? '',
     );
   }
 
@@ -44,6 +48,7 @@ class Recommendation {
       'additionalAdvice': additionalAdvice,
       'warnings': warnings,
       'needsMedicalAttention': needsMedicalAttention,
+      'criticalMessage': criticalMessage,
     };
   }
 }

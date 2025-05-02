@@ -19,29 +19,71 @@ class SymptomCheckbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Determine colors based on whether symptom is critical and checked
+    Color borderColor = symptom.isCritical
+        ? AppTheme.errorColor
+        : (isChecked ? AppTheme.primaryColor : AppTheme.textColorLight);
+
+    Color backgroundColor = symptom.isCritical
+        ? AppTheme.errorColor.withOpacity(0.05)
+        : (isChecked ? AppTheme.primaryColor.withOpacity(0.05) : Colors.white);
+
+    Color textColor = symptom.isCritical
+        ? AppTheme.errorColor
+        : (isChecked ? AppTheme.primaryColor : AppTheme.textColorPrimary);
+
+    Color checkboxActiveColor =
+        symptom.isCritical ? AppTheme.errorColor : AppTheme.primaryColor;
+
     return Container(
       margin: const EdgeInsets.symmetric(
         vertical: AppConstants.PADDING_XS,
         horizontal: AppConstants.PADDING_M,
       ),
       decoration: BoxDecoration(
-        color:
-            isChecked ? AppTheme.primaryColor.withOpacity(0.05) : Colors.white,
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(AppConstants.BORDER_RADIUS_M),
         border: Border.all(
-          color: isChecked ? AppTheme.primaryColor : AppTheme.textColorLight,
-          width: 1,
+          color: borderColor,
+          width: symptom.isCritical ? 1.5 : 1,
         ),
       ),
       child: CheckboxListTile(
-        title: Text(
-          symptom.name,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: isChecked ? FontWeight.w600 : FontWeight.normal,
-            color:
-                isChecked ? AppTheme.primaryColor : AppTheme.textColorPrimary,
-          ),
+        title: Row(
+          children: [
+            Expanded(
+              child: Text(
+                symptom.name,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: isChecked || symptom.isCritical
+                      ? FontWeight.w600
+                      : FontWeight.normal,
+                  color: textColor,
+                ),
+              ),
+            ),
+            if (symptom.isCritical)
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppConstants.PADDING_S,
+                  vertical: AppConstants.PADDING_XS,
+                ),
+                decoration: BoxDecoration(
+                  color: AppTheme.errorColor.withOpacity(0.1),
+                  borderRadius:
+                      BorderRadius.circular(AppConstants.BORDER_RADIUS_S),
+                ),
+                child: const Text(
+                  'Gejala Penting',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.errorColor,
+                  ),
+                ),
+              ),
+          ],
         ),
         subtitle: symptom.description.isNotEmpty
             ? Padding(
@@ -50,16 +92,18 @@ class SymptomCheckbox extends StatelessWidget {
                   symptom.description,
                   style: TextStyle(
                     fontSize: 12,
-                    color: isChecked
-                        ? AppTheme.primaryColor.withOpacity(0.8)
-                        : AppTheme.textColorSecondary,
+                    color: symptom.isCritical
+                        ? AppTheme.errorColor.withOpacity(0.8)
+                        : (isChecked
+                            ? AppTheme.primaryColor.withOpacity(0.8)
+                            : AppTheme.textColorSecondary),
                   ),
                 ),
               )
             : null,
         value: isChecked,
         onChanged: onChanged,
-        activeColor: AppTheme.primaryColor,
+        activeColor: checkboxActiveColor,
         checkColor: Colors.white,
         controlAffinity: ListTileControlAffinity.leading,
         contentPadding: const EdgeInsets.symmetric(

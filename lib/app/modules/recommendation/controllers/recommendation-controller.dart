@@ -15,6 +15,7 @@ class RecommendationController extends GetxController {
   late List<String> selectedSymptomIds;
   var selectedSymptoms = <Symptom>[].obs;
   var recommendation = Rx<Recommendation?>(null);
+  var shouldShowCriticalMessage = false.obs;
 
   @override
   void onInit() {
@@ -54,6 +55,10 @@ class RecommendationController extends GetxController {
       if (recommendation.value == null) {
         showError('Recommendation not found for this disease');
       }
+
+      // Determine if we should show critical message
+      shouldShowCriticalMessage.value = _dataService.shouldShowCriticalMessage(
+          disease.id, selectedSymptomIds);
     } catch (e) {
       showError('Failed to load data: ${e.toString()}');
     } finally {
@@ -70,6 +75,14 @@ class RecommendationController extends GetxController {
       colorText: Colors.white,
     );
     Get.back();
+  }
+
+  bool hasCriticalSymptoms() {
+    return selectedSymptoms.any((symptom) => symptom.isCritical);
+  }
+
+  bool isAllSymptomsSelected() {
+    return selectedSymptomIds.length == disease.symptoms.length;
   }
 
   void copyRecommendation() {
@@ -103,33 +116,41 @@ class RecommendationController extends GetxController {
     }
     buffer.writeln('');
 
-    buffer.writeln('OBAT YANG DIREKOMENDASIKAN:');
-    for (var i = 0; i < rec.medications.length; i++) {
-      final med = rec.medications[i];
-      buffer.writeln('${i + 1}. ${med.name}');
-      buffer.writeln('   Dosis: ${med.dosage}');
-      buffer.writeln('   Frekuensi: ${med.frequency}');
-      buffer.writeln('   Durasi: ${med.duration}');
-      if (med.precautions.isNotEmpty) {
-        buffer.writeln('   Perhatian: ${med.precautions.join(', ')}');
-      }
+    if (shouldShowCriticalMessage.value) {
+      buffer.writeln('PERINGATAN PENTING:');
+      buffer.writeln(rec.criticalMessage);
       buffer.writeln('');
-    }
+      buffer.writeln(
+          'Disarankan untuk segera konsultasi ke dokter atau fasilitas kesehatan terdekat.');
+    } else {
+      buffer.writeln('OBAT YANG DIREKOMENDASIKAN:');
+      for (var i = 0; i < rec.medications.length; i++) {
+        final med = rec.medications[i];
+        buffer.writeln('${i + 1}. ${med.name}');
+        buffer.writeln('   Dosis: ${med.dosage}');
+        buffer.writeln('   Frekuensi: ${med.frequency}');
+        buffer.writeln('   Durasi: ${med.duration}');
+        if (med.precautions.isNotEmpty) {
+          buffer.writeln('   Perhatian: ${med.precautions.join(', ')}');
+        }
+        buffer.writeln('');
+      }
 
-    if (rec.additionalAdvice.isNotEmpty) {
-      buffer.writeln('SARAN TAMBAHAN:');
-      for (var i = 0; i < rec.additionalAdvice.length; i++) {
-        buffer.writeln('${i + 1}. ${rec.additionalAdvice[i]}');
+      if (rec.additionalAdvice.isNotEmpty) {
+        buffer.writeln('SARAN TAMBAHAN:');
+        for (var i = 0; i < rec.additionalAdvice.length; i++) {
+          buffer.writeln('${i + 1}. ${rec.additionalAdvice[i]}');
+        }
+        buffer.writeln('');
       }
-      buffer.writeln('');
-    }
 
-    if (rec.warnings.isNotEmpty) {
-      buffer.writeln('PERINGATAN:');
-      for (var i = 0; i < rec.warnings.length; i++) {
-        buffer.writeln('${i + 1}. ${rec.warnings[i]}');
+      if (rec.warnings.isNotEmpty) {
+        buffer.writeln('PERINGATAN:');
+        for (var i = 0; i < rec.warnings.length; i++) {
+          buffer.writeln('${i + 1}. ${rec.warnings[i]}');
+        }
+        buffer.writeln('');
       }
-      buffer.writeln('');
     }
 
     buffer.writeln(

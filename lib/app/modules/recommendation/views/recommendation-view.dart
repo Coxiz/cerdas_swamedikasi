@@ -35,11 +35,25 @@ class RecommendationView extends GetView<RecommendationController> {
                     const SizedBox(height: AppConstants.PADDING_M),
                     _buildSelectedSymptoms(),
                     const SizedBox(height: AppConstants.PADDING_M),
-                    _buildMedicationList(),
-                    const SizedBox(height: AppConstants.PADDING_M),
-                    _buildAdditionalAdvice(),
-                    const SizedBox(height: AppConstants.PADDING_M),
-                    _buildWarnings(),
+
+                    // Display either critical message or regular recommendation
+                    Obx(() {
+                      if (controller.shouldShowCriticalMessage.value) {
+                        return _buildCriticalMessage();
+                      } else {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildMedicationList(),
+                            const SizedBox(height: AppConstants.PADDING_M),
+                            _buildAdditionalAdvice(),
+                            const SizedBox(height: AppConstants.PADDING_M),
+                            _buildWarnings(),
+                          ],
+                        );
+                      }
+                    }),
+
                     const SizedBox(height: AppConstants.PADDING_L),
                   ],
                 ),
@@ -152,14 +166,23 @@ class RecommendationView extends GetView<RecommendationController> {
               itemBuilder: (context, index) {
                 final symptom = controller.selectedSymptoms[index];
                 return ListTile(
-                  leading: const Icon(
+                  leading: Icon(
                     Icons.circle,
                     size: 10,
-                    color: AppTheme.primaryColor,
+                    color: symptom.isCritical
+                        ? AppTheme.errorColor
+                        : AppTheme.primaryColor,
                   ),
                   title: Text(
                     symptom.name,
-                    style: Get.textTheme.bodyMedium,
+                    style: Get.textTheme.bodyMedium?.copyWith(
+                      fontWeight: symptom.isCritical
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                      color: symptom.isCritical
+                          ? AppTheme.errorColor
+                          : AppTheme.textColorPrimary,
+                    ),
                   ),
                   dense: true,
                   visualDensity: VisualDensity.compact,
@@ -170,6 +193,92 @@ class RecommendationView extends GetView<RecommendationController> {
         ],
       ),
     );
+  }
+
+  Widget _buildCriticalMessage() {
+    return Obx(() {
+      final rec = controller.recommendation.value;
+      if (rec == null) return const SizedBox();
+
+      return CustomCard(
+        backgroundColor: AppTheme.errorColor.withOpacity(0.05),
+        borderRadius: AppConstants.BORDER_RADIUS_L,
+        hasBorder: true,
+        borderColor: AppTheme.errorColor.withOpacity(0.3),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomCardHeader(
+              title: 'Peringatan Penting',
+              titleStyle: Get.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: AppTheme.errorColor,
+              ),
+              leading: Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: AppTheme.errorColor.withOpacity(0.1),
+                  borderRadius:
+                      BorderRadius.circular(AppConstants.BORDER_RADIUS_S),
+                ),
+                child: const Icon(
+                  Icons.warning_amber,
+                  color: AppTheme.errorColor,
+                  size: 18,
+                ),
+              ),
+              hasDivider: false,
+            ),
+            const SizedBox(height: AppConstants.PADDING_M),
+            Padding(
+              padding: const EdgeInsets.all(AppConstants.PADDING_M),
+              child: Text(
+                rec.criticalMessage,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: AppTheme.textColorPrimary,
+                  height: 1.5,
+                ),
+              ),
+            ),
+            const SizedBox(height: AppConstants.PADDING_M),
+            Padding(
+              padding: const EdgeInsets.all(AppConstants.PADDING_M),
+              child: Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: AppTheme.errorColor.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.local_hospital,
+                      color: AppTheme.errorColor,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: AppConstants.PADDING_M),
+                  const Expanded(
+                    child: Text(
+                      'Disarankan untuk segera konsultasi ke dokter atau fasilitas kesehatan terdekat.',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.errorColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    });
   }
 
   Widget _buildMedicationList() {
@@ -341,6 +450,7 @@ class RecommendationView extends GetView<RecommendationController> {
                   size: 18,
                 ),
               ),
+              hasDivider: false,
             ),
             const SizedBox(height: AppConstants.PADDING_S),
             ListView.builder(

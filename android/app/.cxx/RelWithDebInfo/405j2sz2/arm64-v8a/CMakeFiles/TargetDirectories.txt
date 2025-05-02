@@ -1,0 +1,2 @@
+F:/BiSA/Cerdas Swamedikasi/cerdas_swamedikasi/android/app/.cxx/RelWithDebInfo/405j2sz2/arm64-v8a/CMakeFiles/edit_cache.dir
+F:/BiSA/Cerdas Swamedikasi/cerdas_swamedikasi/android/app/.cxx/RelWithDebInfo/405j2sz2/arm64-v8a/CMakeFiles/rebuild_cache.dir

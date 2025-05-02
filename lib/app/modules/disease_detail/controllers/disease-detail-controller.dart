@@ -63,7 +63,19 @@ class DiseaseDetailController extends GetxController {
     return selectedSymptoms.contains(symptomId);
   }
 
-  bool get canProceed => selectedSymptoms.isNotEmpty;
+  // Updated to match project-logic.js logic - at least 2 symptoms must be selected
+  bool get canProceed => selectedSymptoms.length >= 2;
+
+  // Check if any critical symptom is selected
+  bool hasCriticalSymptom() {
+    for (String id in selectedSymptoms) {
+      Symptom? symptom = _dataService.findSymptomById(id);
+      if (symptom != null && symptom.isCritical) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   void goToRecommendation() {
     if (canProceed) {
@@ -74,7 +86,7 @@ class DiseaseDetailController extends GetxController {
     } else {
       Get.snackbar(
         'Perhatian',
-        'Silakan pilih minimal satu gejala',
+        'Silakan pilih minimal dua gejala',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: AppTheme.warningColor,
         colorText: Colors.white,
