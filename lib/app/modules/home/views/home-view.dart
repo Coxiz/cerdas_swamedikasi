@@ -157,9 +157,9 @@ class HomeView extends GetView<HomeController> {
           onTap: onTap,
           borderRadius: BorderRadius.circular(AppConstants.BORDER_RADIUS_L),
           child: Ink(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(AppConstants.BORDER_RADIUS_L),
+              //    borderRadius: BorderRadius.circular(AppConstants.BORDER_RADIUS_L),
               boxShadow: AppTheme.shadow,
             ),
             child: Container(
