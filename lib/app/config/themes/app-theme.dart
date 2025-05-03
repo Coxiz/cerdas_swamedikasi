@@ -4,8 +4,7 @@ import '../constants/app_constants.dart';
 
 class AppTheme {
   // App Colors
-  static const Color primaryColor =
-      Color(0xFF4CAF50); // Green for health/medical
+  static const Color primaryColor = Color(0xFF1b9bae);
   static const Color secondaryColor = Color(0xFF2196F3); // Blue
   static const Color accentColor = Color(0xFFFFC107); // Amber
 

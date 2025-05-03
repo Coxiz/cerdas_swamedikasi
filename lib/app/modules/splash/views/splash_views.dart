@@ -28,13 +28,14 @@ class SplashView extends GetView<SplashController> {
                       width: 120,
                       height: 120,
                       decoration: const BoxDecoration(
-                        color: Colors.white,
+                        color: Colors.transparent,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
-                        Icons.medical_services_rounded,
-                        size: 80,
-                        color: AppTheme.primaryColor,
+                      child: Image.asset(
+                        'assets/images/Cerdik_white_splash.png',
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.contain,
                       ),
                     ),
                   ),

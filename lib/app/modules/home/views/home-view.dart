@@ -44,13 +44,14 @@ class HomeView extends GetView<HomeController> {
                 width: 60,
                 height: 60,
                 decoration: const BoxDecoration(
-                  color: Colors.white,
+                  color: Colors.transparent,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
-                  Icons.medical_services_rounded,
-                  size: 36,
-                  color: AppTheme.primaryColor,
+                child: Image.asset(
+                  'assets/images/Cerdik_white_splash.png',
+                  width: 80,
+                  height: 80,
+                  fit: BoxFit.contain,
                 ),
               ),
               const SizedBox(width: AppConstants.PADDING_M),
@@ -67,7 +68,7 @@ class HomeView extends GetView<HomeController> {
                     ),
                     const SizedBox(height: 4),
                     const Text(
-                      "Solusi Swamedikasi untuk Keluarga",
+                      "Cerdas Swamedikasi",
                       style: TextStyle(
                         color: Colors.white70,
                         fontSize: 14,

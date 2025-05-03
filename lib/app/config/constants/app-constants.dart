@@ -1,5 +1,5 @@
 class AppConstants {
-  static const String appName = "Cerdas Swamedikasi";
+  static const String appName = "CERDIK";
 
   // Routes
   static const String SPLASH = '/splash';

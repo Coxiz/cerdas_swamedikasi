@@ -44,8 +44,12 @@ class DiseaseItem extends StatelessWidget {
                     borderRadius:
                         BorderRadius.circular(AppConstants.BORDER_RADIUS_M),
                   ),
-                  // Icon placeholder - emptied as requested but component kept
-                  child: const SizedBox(),
+                  // Menambahkan icon yang sama untuk semua penyakit
+                  child: const Icon(
+                    Icons.medication,
+                    size: 28,
+                    color: AppTheme.primaryColor,
+                  ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
